@@ -27,12 +27,12 @@ app.get("/assignments", async (req, res) => {
 });
 
 app.get("/assignments/:assignmentId", async (req, res) => {
-    const { assignmentId } = req.params;
+    const assignmentIdFromClient  = req.params.assignmentId;
     let assignment;
       try {
         const result = await connectionPool.query(
          "SELECT * FROM assignments WHERE assignment_id = $1",
-          [assignmentId]
+          [assignmentIdFromClient]
         );
         assignment = result.rows[0];
       } catch (e) {
@@ -48,7 +48,7 @@ app.get("/assignments/:assignmentId", async (req, res) => {
 }); 
 
 app.put("/assignments/:assignmentId", async (req, res) => {
-    const { assignmentId } =  req.params;
+    const assignmentIdFromClient = req.params.assignmentId;
     const updatedAssignment = {
         ...req.body,
         updated_at: new Date(),
@@ -61,7 +61,7 @@ app.put("/assignments/:assignmentId", async (req, res) => {
         SET title = $2, content = $3, categorylength = $4, updated_at = $5, published_at = $6, status = $7
         WHERE assignment_id = $1`,
         [
-            assignmentId,
+            assignmentIdFromClient,
             updatedAssignment.title,
             updatedAssignment.content,
             updatedAssignment.categorylength,
